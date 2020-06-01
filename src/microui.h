@@ -102,7 +102,9 @@ enum {
   MU_KEY_CTRL         = (1 << 1),
   MU_KEY_ALT          = (1 << 2),
   MU_KEY_BACKSPACE    = (1 << 3),
-  MU_KEY_RETURN       = (1 << 4)
+  MU_KEY_RETURN       = (1 << 4),
+  MU_KEY_LEFT         = (1 << 5),
+  MU_KEY_RIGHT        = (1 << 6)
 };
 
 
@@ -210,6 +212,7 @@ struct mu_Context {
   int key_down;
   int key_pressed;
   char input_text[32];
+  int cursor;
 };
 
 

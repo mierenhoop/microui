@@ -219,6 +219,8 @@ static const char key_map[256] = {
   [ SDLK_RALT         & 0xff ] = MU_KEY_ALT,
   [ SDLK_RETURN       & 0xff ] = MU_KEY_RETURN,
   [ SDLK_BACKSPACE    & 0xff ] = MU_KEY_BACKSPACE,
+  [ SDLK_LEFT         & 0xff ] = MU_KEY_LEFT,
+  [ SDLK_RIGHT        & 0xff ] = MU_KEY_RIGHT,
 };
 
 

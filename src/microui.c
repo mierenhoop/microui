@@ -780,8 +780,10 @@ int mu_textbox_raw(mu_Context *ctx, char *buf, int bufsz, mu_Id id, mu_Rect r,
     int len = strlen(buf);
     int n = mu_min(bufsz - len - 1, (int) strlen(ctx->input_text));
     if (n > 0) {
-      memcpy(buf + len, ctx->input_text, n);
+      for (int i = len-ctx->cursor; i > 0; i--) buf[ctx->cursor+i+n] = buf[ctx->cursor+i];
+      memcpy(buf + ctx->cursor, ctx->input_text, n);
       len += n;
+      ctx->cursor += n;
       buf[len] = '\0';
       res |= MU_RES_CHANGE;
     }
@@ -790,7 +792,15 @@ int mu_textbox_raw(mu_Context *ctx, char *buf, int bufsz, mu_Id id, mu_Rect r,
       /* skip utf-8 continuation bytes */
       while ((buf[--len] & 0xc0) == 0x80 && len > 0);
       buf[len] = '\0';
+      ctx->cursor--;
       res |= MU_RES_CHANGE;
+    }
+    /* handle left/right */
+    if (ctx->key_pressed & MU_KEY_LEFT && ctx->cursor > 0) {
+      ctx->cursor--;
+    }
+    if (ctx->key_pressed & MU_KEY_RIGHT && ctx->cursor < len) {
+      ctx->cursor++;
     }
     /* handle return */
     if (ctx->key_pressed & MU_KEY_RETURN) {
@@ -811,7 +821,7 @@ int mu_textbox_raw(mu_Context *ctx, char *buf, int bufsz, mu_Id id, mu_Rect r,
     int texty = r.y + (r.h - texth) / 2;
     mu_push_clip_rect(ctx, r);
     mu_draw_text(ctx, font, buf, -1, mu_vec2(textx, texty), color);
-    mu_draw_rect(ctx, mu_rect(textx + textw, texty, 1, texth), color);
+    mu_draw_rect(ctx, mu_rect(textx + ctx->text_width(font, buf, ctx->cursor), texty, 1, texth), color);
     mu_pop_clip_rect(ctx);
   } else {
     mu_draw_control_text(ctx, buf, r, MU_COLOR_TEXT, opt);
